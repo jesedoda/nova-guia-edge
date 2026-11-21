@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Nova Guia com URL",
-  "short_name": "Nova Guia",
-  "description": "Abre a URL que você escolher em cada nova guia. Sem rastreamento, só a permissão de armazenamento.",
-  "version": "1.0.0",
+  "name": "__MSG_nome__",
+  "short_name": "__MSG_nomeCurto__",
+  "description": "__MSG_descricao__",
+  "default_locale": "en",
+  "version": "1.1.0",
   "minimum_chrome_version": "102",
   "icons": {
     "16": "icones/16.png",
@@ -18,7 +19,7 @@
     "open_in_tab": true
   },
   "action": {
-    "default_title": "Nova Guia: configurar"
+    "default_title": "__MSG_tituloAcao__"
   },
   "background": {
     "service_worker": "fundo.js"

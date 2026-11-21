@@ -39,6 +39,7 @@ um painel, o e-mail ou um arquivo HTML do seu computador.
 - **Sincronização opcional.** Leve a configuração para outros computadores com a conta do Edge, ou
   mantenha uma configuração por computador.
 - **Tema claro e escuro.** Segue o sistema, sem tela branca piscando.
+- **Português e inglês.** Segue o idioma do Edge, ou escolha um nas opções.
 
 ## Privacidade
 
@@ -75,6 +76,7 @@ Clique no ícone da extensão na barra de ferramentas para abrir as opções.
 | Como abrir | **Redirecionar**: funciona com qualquer site.<br>**Navegar pela guia**: o navegador faz a navegação, como se você tivesse digitado o endereço.<br>**Moldura**: o cursor fica na barra de endereço, mas muitos sites não permitem ser exibidos assim. Ideal para páginas próprias e arquivos locais. |
 | Sem conexão | Página aberta quando o navegador está offline. |
 | Sincronização | Liga ou desliga a sincronização das opções com a conta do Edge. |
+| Idioma | Automático (idioma do Edge), English ou Português (Brasil). |
 
 **Arquivos locais:** para abrir arquivos `file://`, ative **Permitir acesso a URLs de arquivo** em
 `edge://extensions` › *Detalhes* da extensão.
@@ -91,19 +93,22 @@ sempre abre primeiro a página da extensão e então vai para o destino, por iss
 extensao/
 ├── manifest.json     # override da nova guia e permissões
 ├── config.js         # validação, escolha da URL e armazenamento
+├── i18n.js           # tradução das páginas (lê _locales/)
+├── _locales/         # textos em inglês (en) e português (pt_BR)
 ├── novaguia.html/js  # página da nova guia
 ├── opcoes.html/js    # página de opções
 ├── fundo.js          # service worker (abre as opções)
 ├── estilo.css
 └── icones/
 testes/
-└── config.test.js
+├── config.test.js
+└── i18n.test.js
 ```
 
 Testes (Node 18 ou superior):
 
 ```
-node --test testes/config.test.js
+node --test testes/config.test.js testes/i18n.test.js
 ```
 
 Depois de alterar o código, clique em **Recarregar** no cartão da extensão em `edge://extensions`.

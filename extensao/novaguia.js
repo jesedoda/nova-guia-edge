@@ -3,9 +3,18 @@
 
 const $ = (id) => document.getElementById(id);
 
-function mostrarAviso({ titulo, texto, links = [], tentar = false }) {
-  $("aviso-titulo").textContent = titulo;
-  $("aviso-texto").textContent = texto;
+// Traduz a página só quando ela vai aparecer (aviso ou moldura); no redirecionamento comum
+// não carregamos os textos, para não atrasar a navegação.
+async function traduzir(idioma) {
+  const t = await NovaGuiaI18n.carregar(idioma);
+  NovaGuiaI18n.aplicar(t);
+  return t;
+}
+
+async function mostrarAviso(idioma, { titulo, texto, textoLivre, links = [], tentar = false }) {
+  const t = await traduzir(idioma);
+  $("aviso-titulo").textContent = t(titulo);
+  $("aviso-texto").textContent = textoLivre ?? (texto ? t(texto) : "");
   const lista = $("aviso-links");
   lista.replaceChildren(
     ...links.map((url) => {
@@ -25,15 +34,15 @@ function mostrarAviso({ titulo, texto, links = [], tentar = false }) {
 // - substituir: location.replace (não deixa a nova guia no histórico do "Voltar");
 // - aba: chrome.tabs.update (navegação feita pelo navegador; o endereço aparece na barra);
 // - moldura: carrega num iframe e o foco continua na barra de endereço.
-async function abrir(url, modo) {
-  if (modo === "aba") {
+async function abrir(url, config) {
+  if (config.abertura === "aba") {
     const aba = await chrome.tabs.getCurrent();
     if (aba) {
       await chrome.tabs.update(aba.id, { url });
       return;
     }
   }
-  if (modo === "moldura") {
+  if (config.abertura === "moldura") {
     const moldura = $("moldura");
     moldura.src = url;
     moldura.hidden = false;
@@ -41,24 +50,18 @@ async function abrir(url, modo) {
     sair.href = url;
     sair.hidden = false;
     document.body.classList.add("com-moldura");
+    await traduzir(config.idioma);
     return;
   }
   location.replace(url);
 }
 
-async function iniciar() {
-  $("abrir-opcoes").addEventListener("click", () => chrome.runtime.openOptionsPage());
-  $("tentar").addEventListener("click", () => location.reload());
-
-  const config = await NovaGuia.carregar();
+async function iniciar(config) {
   const { indiceRotacao } = await chrome.storage.local.get("indiceRotacao");
   const escolha = NovaGuia.escolherUrl(config, indiceRotacao);
 
   if (!escolha) {
-    mostrarAviso({
-      titulo: "Nenhuma URL configurada",
-      texto: "Escolha qual página deve abrir em cada nova guia.",
-    });
+    await mostrarAviso(config.idioma, { titulo: "semUrlTitulo", texto: "semUrlTexto" });
     return;
   }
   if (escolha.proximoIndice !== indiceRotacao) {
@@ -72,33 +75,37 @@ async function iniciar() {
     if (config.reserva) {
       url = config.reserva;
     } else {
-      mostrarAviso({
-        titulo: "Sem conexão",
-        texto: "O navegador está offline. Quando a conexão voltar, tente de novo.",
+      window.addEventListener("online", () => location.reload(), { once: true });
+      await mostrarAviso(config.idioma, {
+        titulo: "offlineTitulo",
+        texto: "offlineTexto",
         links: config.urls,
         tentar: true,
       });
-      window.addEventListener("online", () => location.reload(), { once: true });
       return;
     }
   }
 
   // Arquivos locais exigem "Permitir acesso a URLs de arquivo" em edge://extensions.
   if (url.startsWith("file:") && !(await chrome.extension.isAllowedFileSchemeAccess())) {
-    mostrarAviso({
-      titulo: "Falta permissão para arquivos locais",
-      texto:
-        'Em edge://extensions, abra "Detalhes" desta extensão e ative ' +
-        '"Permitir acesso a URLs de arquivo". Depois tente de novo.',
+    await mostrarAviso(config.idioma, {
+      titulo: "arquivoTitulo",
+      texto: "arquivoTexto",
       tentar: true,
     });
     return;
   }
 
-  await abrir(url, config.abertura);
+  await abrir(url, config);
 }
 
-iniciar().catch((erro) => {
-  console.error(erro);
-  mostrarAviso({ titulo: "Erro ao abrir a nova guia", texto: String(erro) });
-});
+$("abrir-opcoes").addEventListener("click", () => chrome.runtime.openOptionsPage());
+$("tentar").addEventListener("click", () => location.reload());
+
+let config = NovaGuia.sanear(null);
+NovaGuia.carregar()
+  .then((c) => iniciar((config = c)))
+  .catch((erro) => {
+    console.error(erro);
+    mostrarAviso(config.idioma, { titulo: "erroTitulo", textoLivre: String(erro) });
+  });

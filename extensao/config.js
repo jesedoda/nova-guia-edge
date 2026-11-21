@@ -8,17 +8,20 @@
     escolha: "primeira", // "primeira" | "rotacao" | "aleatoria"
     abertura: "substituir", // "substituir" | "aba" | "moldura"
     reserva: "", // URL usada quando o navegador está offline ("" = página interna)
+    idioma: "auto", // "auto" (idioma do Edge) | "en" | "pt_BR"
   });
 
   const ESCOLHAS = ["primeira", "rotacao", "aleatoria"];
+  const IDIOMAS = ["auto", "en", "pt_BR"];
   const ABERTURAS = ["substituir", "aba", "moldura"];
   const PROTOCOLOS = ["http:", "https:", "file:"];
 
   // Valida e normaliza o texto digitado. "exemplo.com" vira "https://exemplo.com/".
-  // Retorna {ok: true, url} ou {ok: false, erro}.
+  // Retorna {ok: true, url} ou {ok: false, erro: {chave, args}}; a chave é traduzida em
+  // _locales/*/messages.json.
   function normalizarUrl(texto) {
     const t = String(texto ?? "").trim();
-    if (!t) return { ok: false, erro: "URL vazia." };
+    if (!t) return { ok: false, erro: { chave: "erroUrlVazia", args: [] } };
     let candidato = t;
     if (/^[a-z]:[\\/]/i.test(t)) {
       // Caminho do Windows (C:\pasta\x.html): antes do teste de esquema, senão "c:" vira esquema.
@@ -31,19 +34,16 @@
     try {
       u = new URL(candidato);
     } catch {
-      return { ok: false, erro: `"${t}" não é uma URL válida.` };
+      return { ok: false, erro: { chave: "erroUrlInvalida", args: [t] } };
     }
     if (!PROTOCOLOS.includes(u.protocol)) {
-      return {
-        ok: false,
-        erro: `Esquema "${u.protocol}" não é permitido (use http, https ou file).`,
-      };
+      return { ok: false, erro: { chave: "erroEsquema", args: [u.protocol] } };
     }
     if (u.protocol !== "file:") {
       const host = u.hostname;
       const pareceHost =
         host === "localhost" || host.includes(".") || host.startsWith("[") || /^\d+$/.test(host);
-      if (!pareceHost) return { ok: false, erro: `"${host}" não parece um endereço.` };
+      if (!pareceHost) return { ok: false, erro: { chave: "erroNaoEndereco", args: [host] } };
     }
     return { ok: true, url: u.href };
   }
@@ -61,7 +61,7 @@
         if (r.ok) {
           if (!urls.includes(r.url)) urls.push(r.url);
         } else {
-          erros.push(`Linha ${i + 1}: ${r.erro}`);
+          erros.push({ chave: "erroLinha", args: [i + 1, r.erro] });
         }
       });
     return { urls, erros };
@@ -75,6 +75,7 @@
       : [];
     if (!ESCOLHAS.includes(c.escolha)) c.escolha = PADRAO.escolha;
     if (!ABERTURAS.includes(c.abertura)) c.abertura = PADRAO.abertura;
+    if (!IDIOMAS.includes(c.idioma)) c.idioma = PADRAO.idioma;
     const reserva = c.reserva ? normalizarUrl(c.reserva) : null;
     c.reserva = reserva && reserva.ok ? reserva.url : "";
     return c;
@@ -121,6 +122,7 @@
     PADRAO,
     ESCOLHAS,
     ABERTURAS,
+    IDIOMAS,
     normalizarUrl,
     lerLista,
     sanear,

@@ -58,7 +58,18 @@ body.com-moldura { overflow: hidden; }
 #sair-moldura:hover, #sair-moldura:focus { opacity: 1; }
 #sair-moldura[hidden], #moldura[hidden] { display: none; }
 
+/* Escondido até os textos traduzidos serem aplicados. */
+body.carregando { visibility: hidden; }
+
 /* Opções ---------------------------------------------------------------- */
+select {
+  font: inherit;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--borda);
+  border-radius: 4px;
+  background: var(--fundo);
+  color: inherit;
+}
 body.opcoes { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 body.opcoes h1 { font-size: 1.5rem; font-weight: 600; }
 fieldset {

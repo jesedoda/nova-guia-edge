@@ -24,12 +24,22 @@ test("lerLista ignora vazias e comentários, remove repetidas e aponta a linha d
   const r = NG.lerLista("github.com\n\n# comentário\nhttps://github.com/\njavascript:x");
   assert.deepEqual(r.urls, ["https://github.com/"]);
   assert.equal(r.erros.length, 1);
-  assert.match(r.erros[0], /^Linha 5:/);
+  assert.equal(r.erros[0].chave, "erroLinha");
+  assert.equal(r.erros[0].args[0], 5);
+  assert.equal(r.erros[0].args[1].chave, "erroEsquema");
+});
+
+test("erros de validação usam chaves de tradução", () => {
+  assert.equal(NG.normalizarUrl("").erro.chave, "erroUrlVazia");
+  assert.deepEqual(NG.normalizarUrl("javascript:x").erro, { chave: "erroEsquema", args: ["javascript:"] });
+  assert.deepEqual(NG.normalizarUrl("abc").erro, { chave: "erroNaoEndereco", args: ["abc"] });
 });
 
 test("sanear descarta valores inválidos", () => {
-  const c = NG.sanear({ urls: ["ok.com", "javascript:x"], escolha: "xyz", abertura: 1, reserva: "abc" });
+  const c = NG.sanear({ urls: ["ok.com", "javascript:x"], escolha: "xyz", abertura: 1, reserva: "abc", idioma: "fr" });
   assert.deepEqual(c.urls, ["https://ok.com/"]);
+  assert.equal(c.idioma, "auto");
+  assert.equal(NG.sanear({ idioma: "pt_BR" }).idioma, "pt_BR");
   assert.equal(c.escolha, "primeira");
   assert.equal(c.abertura, "substituir");
   assert.equal(c.reserva, "");
