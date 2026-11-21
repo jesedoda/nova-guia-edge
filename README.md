@@ -49,12 +49,6 @@ código remoto.
 
 ## Instalação
 
-### Pela loja
-
-Em breve na loja de complementos do Microsoft Edge.
-
-### Manualmente (modo desenvolvedor)
-
 1. Baixe ou clone este repositório.
 2. Abra `edge://extensions` e ative **Modo de desenvolvedor**.
 3. Clique em **Carregar sem pacote** e selecione a pasta `extensao/`.
@@ -112,4 +106,3 @@ node --test testes/config.test.js testes/i18n.test.js
 ```
 
 Depois de alterar o código, clique em **Recarregar** no cartão da extensão em `edge://extensions`.
-Para publicar na loja, veja [docs/publicacao.md](docs/publicacao.md).

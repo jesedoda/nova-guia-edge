@@ -4,3 +4,7 @@
 *.zip
 node_modules/
 dist/
+
+# Arquivos que ficam só neste computador
+docs/
+scripts/
