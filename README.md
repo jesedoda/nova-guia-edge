@@ -1,106 +1,110 @@
-# Nova Guia com URL (Microsoft Edge)
+<p align="center">
+  <img src="extensao/icones/128.png" width="96" alt="Ícone da extensão">
+</p>
 
-Extensão própria para o Edge (Manifest V3) que abre a URL que você escolher em cada nova guia.
-Inspirada na [simple-new-tab-url](https://github.com/zach-adams/simple-new-tab-url), reescrita
-do zero para não depender de repositório alheio.
+<h1 align="center">Nova Guia com URL</h1>
 
-## O Edge já faz isso sozinho?
+<p align="center">
+  Escolha a página que abre em cada nova guia do Microsoft Edge.<br>
+  Leve, sem rastreamento e com uma única permissão.
+</p>
 
-Não, pelo menos não em um PC pessoal:
+<p align="center">
+  <img alt="Manifest V3" src="https://img.shields.io/badge/Manifest-V3-0f6cbd">
+  <img alt="Microsoft Edge" src="https://img.shields.io/badge/Microsoft%20Edge-102%2B-0f6cbd">
+  <img alt="Permissões" src="https://img.shields.io/badge/permiss%C3%B5es-storage-2ea44f">
+</p>
 
-- Em **Configurações › Início, página inicial e nova guia** dá para escolher o que abre na
-  **inicialização** e para onde vai o **botão Início**. A **nova guia** só deixa personalizar a página
-  da Microsoft (layout, conteúdo, plano de fundo). Não existe campo para trocar a nova guia por uma URL.
-- A política de grupo **`NewTabPageLocation`** faz exatamente isso
-  (`HKLM\SOFTWARE\Policies\Microsoft\Edge`, valor `REG_SZ`), mas a documentação da Microsoft diz que no
-  Windows ela só vale em máquinas ingressadas em domínio do Active Directory, no Azure AD/Entra ID ou
-  inscritas em gerenciamento (MDM). Em um Windows 11 Home pessoal o Edge ignora a chave. Também não se
-  aplica a perfis conectados com conta Microsoft pessoal.
-- Por isso a saída é uma extensão que usa `chrome_url_overrides.newtab`.
+---
 
-## Como instalar (sem loja)
+## O problema
 
-1. Abra `edge://extensions`.
-2. Ative **Modo de desenvolvedor** (canto inferior esquerdo).
-3. Clique em **Carregar sem pacote** e escolha a pasta `extensao/` deste repositório.
-4. A página de opções abre sozinha: informe a URL e clique em **Salvar**.
-5. Na primeira nova guia, o Edge pergunta se você quer manter a alteração feita pela extensão.
-   Clique em **Manter alterações** (se clicar em "Alterar de volta", o Edge desativa a extensão).
-6. Desative a outra extensão de nova guia, se houver. Só uma pode controlar a nova guia por vez.
+O Edge deixa você escolher a página de **inicialização** e a do **botão Início**, mas não a da
+**nova guia**: lá só dá para mudar o layout da página da Microsoft. A única forma nativa de trocar a
+nova guia por um endereço é a política `NewTabPageLocation`, que só funciona em computadores
+gerenciados por empresa (domínio, Entra ID ou MDM).
 
-Para abrir as opções depois, clique no ícone da extensão na barra (ou em *Detalhes › Opções da
-extensão*). Depois de alterar o código, clique em **Recarregar** no cartão da extensão em
-`edge://extensions`.
+**Nova Guia com URL** resolve isso: toda nova guia abre o site que você escolher, seja o seu buscador,
+um painel, o e-mail ou um arquivo HTML do seu computador.
 
-> Extensões carregadas sem pacote continuam funcionando, mas o Edge pode mostrar de vez em quando um
-> aviso sobre extensões no modo de desenvolvedor. Para evitar isso, seria preciso publicar na loja de
-> complementos do Edge.
+## Recursos
 
-## O que ela faz
+- **Qualquer endereço.** Sites, `localhost` ou arquivos locais. Digite `github.com` e a extensão
+  completa para `https://github.com/`.
+- **Várias páginas.** Use sempre a mesma, reveze uma por guia ou sorteie.
+- **Três modos de abertura.** Redirecionamento comum, navegação pela própria guia ou moldura, que
+  mantém o cursor na barra de endereço.
+- **Funciona offline.** Sem conexão, abre uma página reserva ou mostra seus links e recarrega quando a
+  internet voltar.
+- **Sincronização opcional.** Leve a configuração para outros computadores com a conta do Edge, ou
+  mantenha uma configuração por computador.
+- **Tema claro e escuro.** Segue o sistema, sem tela branca piscando.
 
-| Recurso | Detalhe |
+## Privacidade
+
+A extensão pede apenas a permissão `storage`, usada para guardar as suas configurações. Ela não lê o
+seu histórico nem as páginas que você visita, não envia dados para nenhum servidor e não carrega
+código remoto.
+
+## Instalação
+
+### Pela loja
+
+Em breve na loja de complementos do Microsoft Edge.
+
+### Manualmente (modo desenvolvedor)
+
+1. Baixe ou clone este repositório.
+2. Abra `edge://extensions` e ative **Modo de desenvolvedor**.
+3. Clique em **Carregar sem pacote** e selecione a pasta `extensao/`.
+4. Na página de opções que se abre, informe a URL e clique em **Salvar**.
+5. Na primeira nova guia, o Edge pergunta se você quer manter a alteração: clique em
+   **Manter alterações**.
+
+> Só uma extensão pode controlar a nova guia por vez. Desative outras extensões de nova guia que
+> estiverem instaladas.
+
+## Uso
+
+Clique no ícone da extensão na barra de ferramentas para abrir as opções.
+
+| Opção | O que faz |
 |---|---|
-| Validação | Aceita `github.com` (vira `https://github.com/`), `localhost:8000` e `C:\pasta\x.html` (vira `file:///`). Recusa `javascript:`, `data:` e o que não parecer endereço. |
-| Várias URLs | Uma por linha: usar sempre a primeira, revezar uma por guia ou sortear. |
-| Três modos de abertura | **Redirecionar** (`location.replace`, padrão), **Navegar pela guia** (`chrome.tabs.update`) e **Moldura** (iframe, mantém o foco na barra de endereço). |
-| Sem conexão | Se o navegador estiver offline, abre a URL reserva (ex.: um HTML local) ou mostra a lista de links e recarrega sozinha quando a conexão volta. |
-| Arquivos locais | Avisa quando falta ativar **Permitir acesso a URLs de arquivo** nos detalhes da extensão. |
-| Sincronização | Opcional, via `chrome.storage.sync` (sincroniza entre PCs com o mesmo perfil). Desmarcada, cada PC tem a própria configuração. |
-| Permissões | Só `storage`. Não lê seu histórico nem as páginas que você visita. |
-| Tema | Segue claro/escuro do sistema, para não piscar branco antes da página carregar. |
+| Páginas | Uma URL por linha. Linhas iniciadas com `#` são ignoradas. |
+| Com mais de uma URL | Sempre a primeira, revezar ou sortear. |
+| Como abrir | **Redirecionar**: funciona com qualquer site.<br>**Navegar pela guia**: o navegador faz a navegação, como se você tivesse digitado o endereço.<br>**Moldura**: o cursor fica na barra de endereço, mas muitos sites não permitem ser exibidos assim. Ideal para páginas próprias e arquivos locais. |
+| Sem conexão | Página aberta quando o navegador está offline. |
+| Sincronização | Liga ou desliga a sincronização das opções com a conta do Edge. |
 
-Configuração por perfil: cada perfil do Edge tem sua própria instância da extensão. Com a sincronização
-ligada, perfis com contas diferentes já ficam separados. Para dois perfis na mesma conta com URLs
-diferentes, desmarque a sincronização em um deles.
+**Arquivos locais:** para abrir arquivos `file://`, ative **Permitir acesso a URLs de arquivo** em
+`edge://extensions` › *Detalhes* da extensão.
 
-### Sobre os modos de abertura
+## Limitações
 
-Nenhuma extensão consegue fazer a nova guia ser "a própria URL". Ela sempre abre primeiro a página da
-extensão (`chrome-extension://…/novaguia.html`) e depois vai para o destino. Cada modo tem um custo:
+Por regra do navegador, nenhuma extensão consegue fazer a nova guia *ser* o próprio site. A guia
+sempre abre primeiro a página da extensão e então vai para o destino, por isso o endereço
+`chrome-extension://` pode aparecer por um instante.
 
-- **Redirecionar:** funciona com qualquer site. O cursor vai para a página, não para a barra de
-  endereço, e o "Voltar" não volta para a nova guia.
-- **Navegar pela guia:** a navegação é feita pelo navegador, como se você tivesse digitado o endereço.
-  Teste se o comportamento do foco e do "Voltar" te agrada mais que o anterior.
-- **Moldura:** a barra de endereço continua vazia e focada, então dá para começar a digitar uma busca
-  direto. Mas muitos sites (Google, GitHub, bancos…) proíbem ser exibidos em iframe e aparecem em
-  branco/erro, e logins podem falhar porque os cookies viram "de terceiros". Funciona bem com páginas
-  suas, um painel local (`http://localhost:...`) ou um arquivo HTML. O botão ↗ no canto abre a página
-  de verdade.
-
-## Como a extensão de referência funciona (simple-new-tab-url)
-
-- `manifest.json`: MV3, `chrome_url_overrides.newtab = redirect.html`, permissão `storage`, página de
-  opções e um `blank.html` exposto como recurso acessível na web (sobra de versões antigas, não é usado).
-- `redirect.js`: lê `url`, `sync` e `highlight` de `chrome.storage.local`. Com `sync` ligado, lê a URL
-  de `chrome.storage.sync`. Sem URL, abre as opções. Para `file://`, checa
-  `chrome.extension.isAllowedFileSchemeAccess`. No caso normal faz `document.location = url`. Com
-  "highlight", usa `chrome.tabs.update(..., {url, highlighted: true})`, mas passa o array de
-  `tabs.query` como se fosse uma guia (`tab.id` fica `undefined`), então só funciona porque
-  `update(undefined)` cai na guia ativa.
-- `options.js`: salva a cada tecla (sem validar nada) em `local` e, se marcado, em `sync`.
-- Limitações: o foco fica na página e não na barra de endereço; aparece um flash da página da
-  extensão; a URL `chrome-extension://` aparece rapidamente; aceita qualquer texto como URL; só uma URL.
-
-## Estrutura
+## Desenvolvimento
 
 ```
 extensao/
-  manifest.json   permissões e override da nova guia
-  config.js       validação, escolha da URL e leitura/gravação no chrome.storage
-  novaguia.html/js  página da nova guia (redireciona, navega ou mostra em moldura)
-  opcoes.html/js  página de opções
-  fundo.js        service worker: abre as opções na instalação e no clique do ícone
-  estilo.css
-  icones/
+├── manifest.json     # override da nova guia e permissões
+├── config.js         # validação, escolha da URL e armazenamento
+├── novaguia.html/js  # página da nova guia
+├── opcoes.html/js    # página de opções
+├── fundo.js          # service worker (abre as opções)
+├── estilo.css
+└── icones/
 testes/
-  config.test.js  testes das funções puras
+└── config.test.js
 ```
 
-## Testes
-
-Com Node 18+:
+Testes (Node 18 ou superior):
 
 ```
 node --test testes/config.test.js
 ```
+
+Depois de alterar o código, clique em **Recarregar** no cartão da extensão em `edge://extensions`.
+Para publicar na loja, veja [docs/publicacao.md](docs/publicacao.md).
