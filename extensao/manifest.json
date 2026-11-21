@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Nova Guia com URL",
+  "short_name": "Nova Guia",
+  "description": "Abre a URL que você escolher em cada nova guia. Sem rastreamento, só a permissão de armazenamento.",
+  "version": "1.0.0",
+  "minimum_chrome_version": "102",
+  "icons": {
+    "16": "icones/16.png",
+    "48": "icones/48.png",
+    "128": "icones/128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "novaguia.html"
+  },
+  "options_ui": {
+    "page": "opcoes.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_title": "Nova Guia: configurar"
+  },
+  "background": {
+    "service_worker": "fundo.js"
+  },
+  "permissions": ["storage"]
+}

@@ -1,0 +1,98 @@
+/* Segue o tema claro/escuro do sistema, para não piscar branco no tema escuro. */
+:root {
+  color-scheme: light dark;
+  --fundo: #f7f7f7;
+  --texto: #1f1f1f;
+  --borda: #c8c8c8;
+  --destaque: #0f6cbd;
+  --erro: #b3261e;
+  --alerta: #8a6100;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #1f1f1f;
+    --texto: #e6e6e6;
+    --borda: #4a4a4a;
+    --destaque: #6cb4f0;
+    --erro: #f2b8b5;
+    --alerta: #f0c674;
+  }
+}
+
+html, body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 14px/1.5 "Segoe UI", system-ui, sans-serif;
+}
+a { color: var(--destaque); }
+code { font-family: Consolas, monospace; }
+
+/* Nova guia ------------------------------------------------------------- */
+body.novaguia { height: 100vh; }
+#aviso { max-width: 36rem; margin: 15vh auto 0; padding: 0 1rem; }
+#aviso h1 { font-size: 1.4rem; font-weight: 600; }
+
+body.com-moldura { overflow: hidden; }
+#moldura {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+#sair-moldura {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  opacity: 0.35;
+}
+#sair-moldura:hover, #sair-moldura:focus { opacity: 1; }
+#sair-moldura[hidden], #moldura[hidden] { display: none; }
+
+/* Opções ---------------------------------------------------------------- */
+body.opcoes { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+body.opcoes h1 { font-size: 1.5rem; font-weight: 600; }
+fieldset {
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem 1rem;
+}
+legend { font-weight: 600; padding: 0 0.3rem; }
+fieldset label { display: block; margin: 0.4rem 0; }
+.linha { margin: 0.8rem 0 0.2rem; }
+textarea, input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.4rem;
+  font: 13px Consolas, monospace;
+  border: 1px solid var(--borda);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+}
+.erros { color: var(--erro); border-left: 3px solid var(--erro); padding-left: 0.8rem; }
+.erros p { margin: 0.2rem 0; }
+.alerta { color: var(--alerta); border-left: 3px solid var(--alerta); padding-left: 0.8rem; }
+.acoes { display: flex; gap: 0.6rem; align-items: center; }
+button {
+  font: inherit;
+  padding: 0.35rem 0.9rem;
+  border-radius: 4px;
+  border: 1px solid var(--borda);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+button[type="submit"] { background: var(--destaque); color: var(--fundo); border-color: var(--destaque); }
+.rodape { opacity: 0.6; font-size: 12px; }

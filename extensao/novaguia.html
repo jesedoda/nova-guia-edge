@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Nova guia</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="estilo.css">
+  <script src="config.js"></script>
+  <script src="novaguia.js" defer></script>
+</head>
+<body class="novaguia">
+  <!-- Mostrado só quando não há URL, quando está offline ou falta permissão. -->
+  <main id="aviso" hidden>
+    <h1 id="aviso-titulo"></h1>
+    <p id="aviso-texto"></p>
+    <ul id="aviso-links"></ul>
+    <p class="acoes">
+      <button id="tentar" type="button" hidden>Tentar de novo</button>
+      <button id="abrir-opcoes" type="button">Configurar</button>
+    </p>
+  </main>
+
+  <!-- Modo "moldura": a página aparece dentro da guia e o foco fica na barra de endereço. -->
+  <iframe id="moldura" hidden title="Página da nova guia"></iframe>
+  <a id="sair-moldura" hidden title="Abrir esta página direto na guia">↗</a>
+</body>
+</html>

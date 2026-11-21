@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Nova Guia — opções</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="estilo.css">
+  <script src="config.js"></script>
+  <script src="opcoes.js" defer></script>
+</head>
+<body class="opcoes">
+  <h1>Nova Guia com URL</h1>
+
+  <form id="form">
+    <fieldset>
+      <legend>Páginas</legend>
+      <label for="urls">Uma URL por linha (linhas com <code>#</code> são ignoradas). Sem <code>https://</code> também vale.</label>
+      <textarea id="urls" rows="5" spellcheck="false" placeholder="https://www.google.com&#10;github.com"></textarea>
+
+      <p class="linha">Com mais de uma URL:</p>
+      <label><input type="radio" name="escolha" value="primeira"> Usar sempre a primeira</label>
+      <label><input type="radio" name="escolha" value="rotacao"> Revezar, uma por guia</label>
+      <label><input type="radio" name="escolha" value="aleatoria"> Sortear a cada guia</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Como abrir</legend>
+      <label>
+        <input type="radio" name="abertura" value="substituir">
+        <strong>Redirecionar</strong> — mais compatível; o foco vai para a página e o “Voltar” não
+        retorna à nova guia.
+      </label>
+      <label>
+        <input type="radio" name="abertura" value="aba">
+        <strong>Navegar pela guia</strong> (<code>tabs.update</code>) — o navegador faz a navegação
+        e o endereço aparece normalmente na barra.
+      </label>
+      <label>
+        <input type="radio" name="abertura" value="moldura">
+        <strong>Moldura</strong> — o foco fica na barra de endereço (dá para digitar na hora), mas
+        muitos sites recusam ser exibidos assim e logins podem não funcionar
+        (cookies de terceiros). Bom para páginas suas ou arquivos locais.
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Sem conexão</legend>
+      <label for="reserva">URL reserva quando o navegador estiver offline (opcional, ex.: um arquivo local):</label>
+      <input type="text" id="reserva" spellcheck="false" placeholder="C:\Users\voce\inicio.html">
+    </fieldset>
+
+    <fieldset>
+      <legend>Sincronização</legend>
+      <label>
+        <input type="checkbox" id="usarSync">
+        Sincronizar estas opções com a conta do perfil do Edge (desmarque para ter uma configuração
+        só neste computador).
+      </label>
+    </fieldset>
+
+    <div id="erros" class="erros" role="alert" hidden></div>
+    <div id="aviso-arquivo" class="alerta" hidden>
+      Há URLs <code>file://</code>: ative “Permitir acesso a URLs de arquivo” nos detalhes desta
+      extensão em <code>edge://extensions</code>.
+    </div>
+
+    <p class="acoes">
+      <button type="submit">Salvar</button>
+      <button type="button" id="testar">Salvar e abrir nova guia</button>
+      <span id="status" role="status"></span>
+    </p>
+  </form>
+
+  <p class="rodape">Versão <span id="versao"></span></p>
+</body>
+</html>

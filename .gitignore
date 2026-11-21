@@ -1,0 +1,5 @@
+# Pacotes gerados pelo Edge ("Compactar extensão") e a chave privada
+*.crx
+*.pem
+*.zip
+node_modules/
